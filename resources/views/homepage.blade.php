@@ -28,6 +28,14 @@
             <button>Submit</button>
         </form>
     </div>
+    <form action="/trip/1/flight/1234" method="POST">
+        @csrf
+        @method('DELETE')
+        <input type="text" name="flightId" placeholder="flightId">
+        <input type="text" name="destinationAirportCode" placeholder="tripId">
+        <button>Delete</button>
+
+    </form>
     
 </body>
 </html>

@@ -3,8 +3,29 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-$trips = [];
-$flights = [];
+$trips = [
+    [
+        "id" => "test",
+        "name" => "nametest"
+    ]
+];
+
+$flights = [
+    [
+        'id' => "1234",
+        'tripId' => "1",
+        "departureAirportCode" =>"nyc",
+        "destinationAirportCode" => "yvr",
+        "departureDate" => "12 december 2023"
+    ],
+    [
+        'id' => "12234",
+        'tripId' => "2",
+        "departureAirportCode" =>"nyc",
+        "destinationAirportCode" => "yvr",
+        "departureDate" => "12 december 2023"
+    ],
+];
 
 Route::get('/', function () {
     return view('homepage');
@@ -42,7 +63,7 @@ Route::post('/trip', function(Request $request) use(&$trips) {
 //Add a flight to a trip
 Route::post('/trip/{id}/flights', function(Request $request, $id) use(&$flights) {
     $flightInfo = [
-        'id' => "3",
+        'id' => uniqid(),
         'tripId' => $id,
         "departureAirportCode" => $request -> input("departureAirportCode"),
         "destinationAirportCode" => $request -> input("destinationAirportCode"),
@@ -51,11 +72,22 @@ Route::post('/trip/{id}/flights', function(Request $request, $id) use(&$flights)
     
     $flights[] = $flightInfo;
 
-    //return Response::json($flightInfo);
-    return view("showFlights", ["flights"=>$flights]);
+    return Response::json($flightInfo);
+    //return view("showFlights", ["flights"=>$flights]);
 });
 
 //Delete a flight from a trip
 Route::delete('/trip/{id}/flight/{flightId}', function($id, $flightId) use (&$flights) {
+    $findFlightIndex = array_search($flightId, array_column($flights, 'id'));
 
+    if ($findFlightIndex !== false){
+        $flight = $flights[$findFlightIndex];
+
+        if ($flight['tripId']===$id){
+            unset($flights[$findFlightIndex]);
+            //return Response::json($flights);
+            return Response::json(['message'=>"Flight {$flightId} removed from the trip {$id}", 'status'=>"success"]);
+        }
+    }
+    return Response::json(['message'=>"Flight {$flightId} not found from the trip {$id}", 'status'=>"error"]);
 });
