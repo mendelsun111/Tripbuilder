@@ -1,17 +1,10 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+$trips = [];
+$flights = [];
 
 Route::get('/', function () {
     return view('homepage');
@@ -28,7 +21,20 @@ Route::get('/airports', function(){
     ];
 
     return Response::json($airports);
-    
+
     //directly display airports on webapp
     //return view("showAirports", ["airports"=>$airports]);
+});
+
+//Create a trip with id and name
+Route::post('/trip', function(Request $request) use(&$trips) {
+    $tripInfo = $request->validate([
+        "id"=>['required'],
+        "name"=>['required']
+    ]);
+
+    $trips[]=$tripInfo;
+    
+    //return Response::json($trips);
+    return view("showTrips", ["trips"=>$trips]);
 });
