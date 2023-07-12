@@ -14,5 +14,21 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('homepage');
+});
+
+//Lists all available airports
+Route::get('/airports', function(){
+    $airports = [
+        "Montreal" => "YUL",
+        "Toronto" => "YYZ",
+        "Vancouver" => "YVR",
+        "Ottawa" => "YOW",
+        "NewYork" => "NYC"
+    ];
+
+    return Response::json($airports);
+    
+    //directly display airports on webapp
+    //return view("showAirports", ["airports"=>$airports]);
 });
