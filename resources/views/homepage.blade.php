@@ -12,7 +12,6 @@
         <h2>Create a trip</h2>
         <form action="/trip" method="POST">
             @csrf
-            <input type="text" name="id" placeholder="user id">
             <input type="text" name="name" placeholder="user name">
             <button>Submit</button>
         </form>
