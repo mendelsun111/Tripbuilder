@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class TripController extends Controller
 {
@@ -11,8 +12,12 @@ class TripController extends Controller
     private $flights;
 
     public function __construct(){
-        $this->trips = [];
-        $this->flights = [];
+        $this->trips = Cache::get('trips',[]);
+        $this->flights = Cache::get('flights',[]);
+    }
+
+    public function getAllFlights(){
+        return response()->json($this->flights);
     }
 
     public function createTrip(Request $request){
@@ -22,7 +27,10 @@ class TripController extends Controller
         ];
 
         $this->trips[]=$tripInfo;
-        
+
+        Cache::put('trips', $this->trips);
+        Cache::put('flights', $this->flights);
+
         return response()->json($tripInfo);
     }
 
@@ -36,6 +44,8 @@ class TripController extends Controller
         ];
         
         $this->flights[] = $flightInfo;
+        Cache::put('trips', $this->trips);
+        Cache::put('flights', $this->flights);
     
         return response()->json($flightInfo);
     }
@@ -44,10 +54,14 @@ class TripController extends Controller
         $flightIndex = array_search($flightId, array_column($this->flights, 'id'));
     
         if ($flightIndex !== false){
-            $flight = $this->$flights[$flightIndex];
+            $flight = $this->flights[$flightIndex];
     
             if ($flight['tripId']===$id){
                 unset($this->flights[$flightIndex]);
+
+                Cache::put('trips', $this->trips);
+                Cache::put('flights', $this->flights);
+
                 return response()->json(['message'=>"Flight {$flightId} removed from the trip {$id}", 'status'=>"success"]);
             }
         }

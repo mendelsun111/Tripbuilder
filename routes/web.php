@@ -4,30 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\AirportController;
 
-// $trips = [
-//     [
-//         "id" => "test",
-//         "name" => "nametest"
-//     ]
-// ];
-
-// $flights = [
-//     [
-//         'id' => "1234",
-//         'tripId' => "1",
-//         "departureAirportCode" =>"nyc",
-//         "destinationAirportCode" => "yvr",
-//         "departureDate" => "12 december 2023"
-//     ],
-//     [
-//         'id' => "12234",
-//         'tripId' => "2",
-//         "departureAirportCode" =>"nyc",
-//         "destinationAirportCode" => "yvr",
-//         "departureDate" => "12 december 2023"
-//     ],
-// ];
-
 Route::get('/', function () {
     return view('homepage');
 });
@@ -43,3 +19,11 @@ Route::post('/trip/{id}/flights', [TripController::class, "addFlight"]);
 
 //Delete a flight from a trip
 Route::delete('/trip/{id}/flight/{flightId}', [TripController::class, 'deleteFlight']);
+
+//CSRF token for Postman API testing (EXTRA FOR POSTMAN)
+Route::get('/token', function(){
+    return csrf_token();
+});
+
+//Get all flights (EXTRA FOR POSTMAN)
+Route::get('/flights', [TripController::class, 'getAllFlights']);
